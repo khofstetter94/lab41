@@ -2,6 +2,7 @@
   "expo": {
     "name": "lab41",
     "slug": "lab41",
+    "owner": "khofstetter94",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
