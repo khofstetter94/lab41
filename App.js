@@ -1,12 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, View, FlatList, Linking } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, FlatList, Linking, Button, Image, Platform } from 'react-native';
 import * as Contacts from 'expo-contacts';
+import * as ImagePicker from 'expo-image-picker';
 import { NativeBaseProvider, Box } from "native-base";
-import { Button } from 'native-base';
+// import { Button } from 'native-base';
 
 export default function App() {
   const [contacts, setContacts] = useState([]);
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     const getContacts = async () => {
@@ -27,8 +29,24 @@ export default function App() {
   };
 
   const renderItem = ({ item }) => (
-    <Button onPress={() => call(item)} mb="2.5">{item.name}</Button>
+    <Button title={item.name} onPress={() => call(item)} mb="2.5" />
   );
+
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    console.log(result);
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
 
   return (
     <NativeBaseProvider>
@@ -46,6 +64,10 @@ export default function App() {
           </View>
           <StatusBar style="auto" />
         </SafeAreaView>
+      </View>
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <Button title="Pick an image from camera roll" onPress={pickImage} />
+        {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
       </View>
     </NativeBaseProvider>
   );
